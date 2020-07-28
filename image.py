@@ -98,7 +98,44 @@ class AddImage(blobstore_handlers.BlobstoreUploadHandler):
         else:
             return self.redirect('/')
 
-    
+        ###
+        in_g_dup = False
+        all_g_dup = False
+        #Marking existing images as dup
+        for galleries in myuser.galleries:
+
+            temp_key = myuser.key.id()+'_'+galleries
+            gallery_key = ndb.Key('GalleryModel', temp_key)
+            gallery = gallery_key.get()
+
+            in_marker = []
+            out_marker= []
+
+            #looping images of opend gallery
+            #after marking all images
+            for i,images in enumerate(gallery.images):
+                if images.origin == origin:
+                    if current_gallery_name == gallery.gallery_name:
+                        in_marker.append(i)
+                        in_g_dup = True
+                    else:
+                        logging.info("i marked it fucker")
+                        out_marker.append(i)
+                        all_g_dup = True
+
+            #so here we are
+            #cant update while looping in entity
+            logging.info(in_marker)
+            logging.info(out_marker)
+            for mark in in_marker:
+                gallery.images[mark].in_gallery_dup = True
+
+            for mark in out_marker:
+                gallery.images[mark].all_gallery_dup = True
+
+
+            #made changes in gallery in one go
+            gallery.put()
 
         new_image = ImageModel(image = image,origin = origin, in_gallery_dup = in_g_dup, all_gallery_dup= all_g_dup)
 
@@ -194,3 +231,9 @@ class DeleteImage(webapp2.RequestHandler):
 
 
         self.redirect('/')
+
+
+
+
+
+    

@@ -201,3 +201,4 @@ class DeleteGallery(webapp2.RequestHandler):
         gallery.key.delete()
 
         self.redirect('/galleries')
+        
