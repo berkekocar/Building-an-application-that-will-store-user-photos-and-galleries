@@ -1,0 +1,19 @@
+
+{% extends "layout.html" %}
+{% block content%}
+
+<div class="container">
+    <div class="jumbotron">
+        {% if myuser %}
+        <h1 class="display-4">Hello user</h1>
+        <a class="btn btn-primary btn-lg" href="/galleries" role="button">Galleries</a>
+        {% else %}
+        <h1 class="display-4">Hello user</h1>
+        <p>Welcome to Berke's Art please Register</p>
+        <a class="btn btn-primary btn-lg" href="{{url}}" role="button">Sign in</a>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
