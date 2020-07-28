@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block content%}
+
+<div class="container">
+    <form method ="POST" action="/galleries/add">
+        <div class="form-row">
+            <div class="col">
+                <input type="text" class="form-control" name="new_gallery" id="new_gallery" placeholder="Gallery Name">
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Create Gallery</button>
+            </div>
+        </div>
+    </form>
+    <hr>
+    <br>
+    <br>
+    {% for i in range(galleries_len) %}
+    <div class="row">
+        <div class=" col-md-12">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="{{img[i]}}" class="card-img" alt="Img Not Found">
+                    </div>
+                    <div class="offset-md-1 col-md-7">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <a style="text-decoration: none; color: black;" href="/galleries/{{galleries[i]}}">
+                                    {{galleries[i]}}
+                                </a>
+                            </h3>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <form method="GET" action= "/galleries/edit">
+                                        <button class="btn btn-warning" type="submit" name="gallery_name" value="{{galleries[i]}}">Edit</button>
+                                    </form>
+                                </div>
+                                <div class="col-md-4">
+                                    <form method="POST" action= "/galleries/delete">
+                                        <button class="btn btn-danger" type="submit" name="gallery_name" value="{{galleries[i]}}">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+{% endblock %}

@@ -6,6 +6,15 @@ from google.appengine.ext import ndb
 from google.appengine.api import users
 
 from userModel import UserModel
+from galleryModel import GalleryModel
+
+
+from gallery import *
+from image import *
+
+from google.appengine.ext import blobstore
+from google.appengine.api import images
+
 
 
 JINJA_ENVIRONMENT = jinja2.Environment(
@@ -58,5 +67,8 @@ class MainPage(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage)
+    ('/', MainPage),
+    ('/Home',MainPage),
+    ('/galleries',ListGallery),
+    ('/galleries/add',AddGallery)
 ], debug = True)
