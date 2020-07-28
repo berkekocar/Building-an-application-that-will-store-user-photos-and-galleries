@@ -136,7 +136,7 @@ class AddImage(blobstore_handlers.BlobstoreUploadHandler):
 
             #made changes in gallery in one go
             gallery.put()
-                     
+
         new_image = ImageModel(image = image,origin = origin, in_gallery_dup = in_g_dup, all_gallery_dup= all_g_dup)
 
         #added image to gallery
@@ -144,3 +144,96 @@ class AddImage(blobstore_handlers.BlobstoreUploadHandler):
         current_gallery.image_count += 1
         current_gallery.put()
         self.redirect('/galleries')
+
+
+
+class DeleteImage(webapp2.RequestHandler):
+    def post(self):
+        self.response.headers['Content-Type'] = 'text/html'
+
+        user = users.get_current_user()
+        myuser_key = ndb.Key('UserModel', user.user_id())
+        myuser = myuser_key.get()
+
+        gallery_name = self.request.get('gallery_name')
+        image_index = self.request.get('image_index')
+
+        temp_key = myuser.key.id()+"_"+ gallery_name
+
+        current_gallery_key = ndb.Key('GalleryModel', temp_key)
+        current_gallery = current_gallery_key.get()
+        current_image = current_gallery.images[int(image_index)]
+
+
+        # functions used below if else statement to be easy to read
+        def remove_current_image():
+            current_gallery.image_count -= 1
+            del current_gallery.images[int(image_index)]
+            current_gallery.put()
+
+
+        def in_gallery_clean():
+            temp_list = []
+            for i, images in enumerate(current_gallery.images):
+                if images.origin == current_image.origin:
+                    temp_list.append(i)
+
+            #meaning only remaining 1
+            if len(temp_list) == 1:
+                current_gallery.images[(temp_list[0])].in_gallery_dup = False
+                current_gallery.put()
+            #else there is more than 1 dup not necessary to change
+
+        def out_gallery_clean():
+            temp_list= []
+
+            for gallery in myuser.galleries:
+                if gallery != gallery_name:
+                    temp_key = myuser.key.id()+"_"+ gallery
+                    gallery_key = ndb.Key('GalleryModel', temp_key)
+                    gal = gallery_key.get()
+
+                    for i,images in enumerate(gal.images):
+                        if images.origin == current_image.origin:
+                            temp_list.append(i)
+                            found_in = gallery
+
+            #this is the only dup remaning in entire gallery
+            if len(temp_list) == 1:
+                temp_key = myuser.key.id()+"_"+ found_in
+                gallery_key = ndb.Key('GalleryModel', temp_key)
+                gal = gallery_key.get()
+                gal.images[(temp_list[0])].all_gallery_dup = False
+                gal.put()
+
+
+        #while this partician looks long incase it enters to if/elif statement process time will be faster
+        #than average
+        if (current_image.all_gallery_dup == False and current_image.in_gallery_dup == False):
+            remove_current_image()
+            return self.redirect('/galleries')
+
+        elif current_image.all_gallery_dup == False and current_image.in_gallery_dup == True:
+            remove_current_image()
+            in_gallery_clean()
+            return self.redirect('/galleries')
+
+        elif current_image.all_gallery_dup == True and current_image.in_gallery_dup == False:
+            remove_current_image()
+            out_gallery_clean()
+            return self.redirect('/galleries')
+
+        elif current_image.all_gallery_dup == True and current_image.in_gallery_dup == True:
+            remove_current_image()
+            in_gallery_clean()
+            out_gallery_clean()
+            return self.redirect('/galleries')
+
+
+        self.redirect('/')
+
+
+
+
+
+    
