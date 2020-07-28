@@ -15,8 +15,6 @@ from image import *
 from google.appengine.ext import blobstore
 from google.appengine.api import images
 
-
-
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions = ['jinja2.ext.autoescape'],
@@ -70,5 +68,10 @@ app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/Home',MainPage),
     ('/galleries',ListGallery),
-    ('/galleries/add',AddGallery)
+    ('/galleries/add',AddGallery),
+    ('/galleries/edit', EditGallery),
+    ('/galleries/delete', DeleteGallery),
+    ('/galleries/(.*?)',ListImage),
+    ('/image/delete',DeleteImage),
+    ('/image/add',AddImage)
 ], debug = True)

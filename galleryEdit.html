@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content%}
+
+<div class="container">
+    <form method ="POST" action="/galleries/edit">
+        <div class="form-row">
+            <div class="col">
+                <input type="text" class="form-control" name="gallery_new_name" placeholder="{{current_name}}">
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Edit</button>
+            </div>
+        </div>
+        <input type="hidden" name="old_name" value="{{current_name}}" >
+    </form>
+</div>
+
+
+{% endblock %}
