@@ -119,7 +119,7 @@ class AddImage(blobstore_handlers.BlobstoreUploadHandler):
                         in_marker.append(i)
                         in_g_dup = True
                     else:
-                        logging.info("i marked it fucker")
+                        logging.info("I marked it!")
                         out_marker.append(i)
                         all_g_dup = True
 
@@ -231,9 +231,3 @@ class DeleteImage(webapp2.RequestHandler):
 
 
         self.redirect('/')
-
-
-
-
-
-    

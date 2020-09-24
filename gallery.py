@@ -165,7 +165,7 @@ class EditGallery(webapp2.RequestHandler):
         new_gallery = GalleryModel(id= new_key,image_count = gallery.image_count ,images = temp_images)
         new_gallery.put()
 
-        #deleted old gallary due to key/value
+        #deleted old gallery due to key/value
         gallery.key.delete()
 
         #updated UserModel
@@ -201,4 +201,3 @@ class DeleteGallery(webapp2.RequestHandler):
         gallery.key.delete()
 
         self.redirect('/galleries')
-        
